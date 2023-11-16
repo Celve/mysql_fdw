@@ -1607,10 +1607,10 @@ mysqlPlanForeignModify(PlannerInfo *root,
 
 	foreignTableId = RelationGetRelid(rel);
 
-	if (!mysql_is_column_unique(foreignTableId))
+	if ((operation == CMD_UPDATE || operation == CMD_DELETE) && !mysql_is_column_unique(foreignTableId))
 		ereport(ERROR,
 				(errcode(ERRCODE_FDW_UNABLE_TO_CREATE_EXECUTION),
-				 errmsg("first column of remote table must be unique for INSERT/UPDATE/DELETE operation")));
+				 errmsg("first column of remote table must be unique for UPDATE/DELETE operation")));
 
 	/*
 	 * ON CONFLICT DO UPDATE and DO NOTHING case with inference specification
